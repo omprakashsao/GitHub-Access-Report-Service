@@ -1,0 +1,79 @@
+@Library('trade-shared-lib') _
+
+pipeline {
+    agent any
+
+    environment {
+        IMAGE_NAME = 'github-access-report'
+        IMAGE_TAG  = "${BUILD_NUMBER}"
+        REPO_URL   = 'https://github.com/omprakashsao/GitHub-Access-Report-Service.git'
+        BRANCH     = 'main'
+    }
+
+    stages {
+
+        stage('Clean Workspace') {
+            steps {
+                script {
+                    clean_ws()   // or cleanWs() if plugin installed
+                }
+            }
+        }
+
+        stage('Clone Repository') {
+            steps {
+                script {
+                    clone(
+                        repoUrl: env.REPO_URL,
+                        branch : env.BRANCH,
+                        credentialsId: 'github-credentials'
+
+                    )
+                }
+            }
+        }
+
+        stage('Trivy File System Scan') {
+            steps {
+                trivyFsScan()
+            }
+        }
+
+
+
+
+        stage('Docker Build') {
+            steps {
+                script {
+                    dockerBuild(
+                        imageName: env.IMAGE_NAME,
+                        imageTag : env.IMAGE_TAG
+                    )
+                }
+            }
+        }
+
+        stage('Trivy Image Scan') {
+            steps {
+                script {
+                    trivyImageScan(
+                        imageName: env.IMAGE_NAME,
+                        imageTag : env.IMAGE_TAG
+                    )
+                }
+            }
+        }
+
+        stage('Docker Push') {
+            steps {
+                script {
+                    dockerPush(
+                        imageName: env.IMAGE_NAME,
+                        imageTag : env.IMAGE_TAG,
+                        credentialsId: 'docker-hub-credentials'
+                    )
+                }
+            }
+        }
+    }
+}

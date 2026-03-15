@@ -131,7 +131,7 @@ This makes it easier to **test, debug, and understand the API** without using ex
 
 ---
 
-## ⚙️ Jenkins Continuous Integration (CI) pipeline
+## ⚙️ Jenkins Continuous Integration Pipeline
 
 This project includes a Jenkins Continuous Integration (CI) pipeline that automates the build, security scanning, and Docker image publishing process whenever changes are pushed to the repository.
 
