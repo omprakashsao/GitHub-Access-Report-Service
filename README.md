@@ -32,7 +32,7 @@ The application is built using **Spring Boot** and follows clean backend archite
 
 ---
 
-## ⚠️ Problem Statement
+## 🧠 Problem Statement
 
 The system solves the following organizational challenges:
 
@@ -106,9 +106,22 @@ The application handles the following scenarios to ensure reliable API responses
 
 ---
 
-## 📘 Swagger UI automatically documents APIs and allows testing APIs directly from browser.
+---
 
-This API endpoint fetches repository access information for a given GitHub organization. It aggregates repository collaborators and their permission levels, providing a structured access report grouped by user. The response also highlights repositories whose collaborator information could not be accessed due to GitHub permission limitations.
+# 📘 API Documentation (Swagger / OpenAPI)
+
+The project integrates **Swagger UI using OpenAPI Specification** to automatically generate interactive API documentation.
+
+Swagger UI provides a **web-based interface** that allows developers to:
+
+* 🔍 Explore all available REST endpoints
+* 📥 View request parameters and response formats
+* ▶️ Execute API requests directly from the browser
+* 📤 Inspect response payloads and HTTP status codes
+
+This makes it easier to **test, debug, and understand the API** without using external tools such as **Postman** or **curl**.
+
+---
 
 <br>
 
@@ -269,9 +282,9 @@ com.omprakash.github_access_report
 Before running the project, ensure the following tools are installed on your system:
 
 | Requirement                      | Description                                             |
-| -------------------------------- | ------------------------------------------------------- |
+| -------------------------------- |---------------------------------------------------------|
 | **Java 21**                      | Required to run the Spring Boot application             |
-| **IDE**                          | Intellij IDEA for better experience.                    |
+| **IDE**                          | Intellij IDEA for Run the Spring Boot Application.      |
 | **Maven**                        | Used for dependency management and building the project |
 | **GitHub Personal Access Token** | Required to authenticate with the GitHub API            |
 
@@ -320,19 +333,84 @@ src/main/resources/application.properties
 Add the following configuration:
 
 ```properties
-github.token=${YOUR_GITHUB_PERSONAL_ACCESS_TOKEN}
+github.token=YOUR_GITHUB_PERSONAL_ACCESS_TOKEN
 github.base-url=https://api.github.com
 ```
 
-Replace `YOUR_GITHUB_PERSONAL_ACCESS_TOKEN` with the token generated from GitHub.
+Replace `YOUR_GITHUB_PERSONAL_ACCESS_TOKEN` with the token generated from GitHub, ensure you are using environment variables, for more read Security Note!!
 
 ---
 
-### 🔒 Security Note
+---
 
-The GitHub token should **not be committed to public repositories**.
+# 🔒 Security Note
 
-For production environments, it is recommended to store the token using environment variables or a secure secret management system.
+The GitHub Personal Access Token (PAT) should **never be committed to public repositories**.
+
+Instead of storing the token directly in the source code, it should be provided through **environment variables** or a **secure secret management system**.
+
+---
+
+## 🌍 Using Environment Variables
+
+Create an environment variable named `GITHUB_TOKEN` and configure the application to read it from `application.properties`.
+
+### Example Configuration
+
+```properties
+github.api.base-url=https://api.github.com
+github.api.token=${GITHUB_TOKEN}
+```
+
+---
+
+# ⚙️ Setting the Environment Variable
+
+## 🐧 Linux / macOS
+
+```bash
+export GITHUB_TOKEN=your_github_personal_access_token
+```
+
+---
+
+## 🪟 Windows (PowerShell)
+
+```powershell
+$env:GITHUB_TOKEN="your_github_personal_access_token"
+```
+
+---
+
+## 🪟 Windows (Command Prompt)
+
+```cmd
+set GITHUB_TOKEN=your_github_personal_access_token
+```
+
+---
+
+# 💻 Setting Environment Variable in IntelliJ IDEA
+
+If you are running the application using **IntelliJ IDEA**, you can configure the environment variable directly in the run configuration.
+
+### Steps
+
+1. Open **Run → Edit Configurations**
+2. Select your **Spring Boot Application**
+3. Locate the **Environment Variables** field
+4. Add the following variable:
+
+```text
+GITHUB_TOKEN=your_github_personal_access_token
+```
+
+5. Click **Apply** and **Run** the application.
+
+This allows the application to securely read the GitHub token without storing it in the source code.
+
+---
+
 
 ---
 
@@ -365,9 +443,9 @@ The application can be executed using two different approaches:
 ## 1️⃣ Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/github-access-report.git
+git clone https://github.com/omprakashsao/GitHub-Access-Report-Service.git
 
-cd github-access-report
+cd GitHub-Access-Report-Service
 ```
 
 ---
@@ -460,7 +538,7 @@ docker build -t github-access-report .
 ## 2️⃣ Run the Docker Container
 
 ```bash
-docker run -p 8080:8080 -e GIT_TOKEN=YOUR_PersonalAccessToken github-access-report
+docker run -p 8080:8080 -e GIT_TOKEN=GITHUB_PERSONAL_ACCESS_TOKEN github-access-report
 ```
 
 This will start the application inside a Docker container and expose it on **port 8080**.
