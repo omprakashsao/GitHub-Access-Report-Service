@@ -33,6 +33,56 @@ Beyond the minimum requirements, this project includes several improvements typi
 - **API response caching** to reduce repeated GitHub calls
 - **Global exception handling** – consistent API error responses
 - **Swagger/OpenAPI documentation** – interactive API documentation
+- **Jenkins Continuous Integration (CI) pipeline** – that automates the build, security scanning, and Docker image
+
+---
+
+### Swagger UI automatically documents APIs and allows testing APIs directly from browser.
+
+This API endpoint fetches repository access information for a given GitHub organization. It aggregates repository collaborators and their permission levels, providing a structured access report grouped by user. The response also highlights repositories whose collaborator information could not be accessed due to GitHub permission limitations.
+<p align="center">
+  <img src="./asset/swagger%20ui.jpeg" width="1000" alt="Dashboard Screenshot"/>
+</p>
+
+
+
+---
+
+## Jenkins Continuous Integration (CI) pipeline
+
+<p align="center">
+  <img src="./asset/GitHub_Access_Report_Jinkin_CI_Pipeline.png" width="1000" alt="Dashboard Screenshot"/>
+</p>
+
+---
+
+## CI Pipeline (Jenkins)
+
+This project includes a Jenkins Continuous Integration (CI) pipeline that automates the build, security scanning, and Docker image publishing process whenever changes are pushed to the repository.
+
+The pipeline ensures that the application is built, analyzed for vulnerabilities, and packaged into a Docker image in a fully automated manner.
+
+Pipeline Stages
+
+The Jenkins pipeline consists of the following stages:
+
+Clean Workspace
+Clears the Jenkins workspace to ensure a fresh build environment.
+
+Clone Repository
+Pulls the latest source code from the GitHub repository.
+
+Trivy File System Scan
+Performs a vulnerability scan on the project files using Trivy to detect potential security issues in dependencies and source code.
+
+Docker Build
+Builds the Docker image for the Spring Boot application using the multi-stage Dockerfile.
+
+Trivy Image Scan
+Scans the built Docker image for vulnerabilities to ensure the container is secure before deployment.
+
+Docker Push
+Pushes the built Docker image to Docker Hub, making it available for deployment.
 
 ---
 

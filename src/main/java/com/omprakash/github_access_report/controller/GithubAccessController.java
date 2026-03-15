@@ -1,5 +1,6 @@
 package com.omprakash.github_access_report.controller;
 
+import com.omprakash.github_access_report.config.ApiErrorResponses;
 import com.omprakash.github_access_report.exception.CustomErrorResponse;
 import com.omprakash.github_access_report.exception.GithubApiException;
 import com.omprakash.github_access_report.model.AccessReport;
@@ -38,77 +39,12 @@ public class GithubAccessController {
      * @return AccessReport containing user -> repositories mapping
      */
     @Operation(summary = "Generate GitHub repository access report for an organization")
-    @ApiResponses(value = {
-
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Access report generated successfully",
-                    content = @Content(mediaType = "application/json")
-            ),
-
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Bad Request: Organization parameter is missing or invalid",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = CustomErrorResponse.class)
-                    )
-            ),
-
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "Unauthorized: GitHub authentication failed. Please verify the configured GitHub access token",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = CustomErrorResponse.class)
-                    )
-            ),
-
-            @ApiResponse(
-                    responseCode = "403",
-                    description = "Forbidden: Access denied to view collaborators for one or more repositories",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = CustomErrorResponse.class)
-                    )
-            ),
-
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Not Found: GitHub organization does not exist or is not accessible",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = CustomErrorResponse.class)
-                    )
-            ),
-
-            @ApiResponse(
-                    responseCode = "429",
-                    description = "Too Many Requests: GitHub API rate limit exceeded",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = CustomErrorResponse.class)
-                    )
-            ),
-
-            @ApiResponse(
-                    responseCode = "502",
-                    description = "Bad Gateway: GitHub service is unavailable",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = CustomErrorResponse.class)
-                    )
-            ),
-
-            @ApiResponse(
-                    responseCode = "500",
-                    description = "Internal Server Error: Unexpected error occurred",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = CustomErrorResponse.class)
-                    )
-            )
-    })
+    @ApiErrorResponses
+    @ApiResponse(
+            responseCode = "200",
+            description = "Access report generated successfully",
+            content = @Content(mediaType = "application/json")
+    )
     @GetMapping("/access-report")
     public ResponseEntity<AccessReport> getAccessReport(
             @RequestParam String org
