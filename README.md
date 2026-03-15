@@ -140,7 +140,7 @@ The pipeline ensures that the application is built, analyzed for vulnerabilities
 ### 🔄 Pipeline Stages
 
 <p align="center">
-  <img src="./asset/GitHub_Access_Report_Jinkin_CI_Pipeline.png" width="1000" alt="Dashboard Screenshot"/>
+  <img src="./asset/GitHub-Access-Report-Service-CI-Pipeline.png" width="1000" alt="Dashboard Screenshot"/>
 </p>
 
 The Jenkins pipeline consists of the following stages:
