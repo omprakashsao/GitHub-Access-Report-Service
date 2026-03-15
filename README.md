@@ -33,7 +33,7 @@ Beyond the minimum requirements, this project includes several improvements typi
 - **API response caching** to reduce repeated GitHub calls
 - **Global exception handling** – consistent API error responses
 - **Swagger/OpenAPI documentation** – interactive API documentation
-- **Jenkins Continuous Integration (CI) pipeline** – that automates the build, security scanning, and Docker image
+- **Jenkins Continuous Integration (CI) pipeline** – that automates the build, security scanning, and push the Docker image
 
 ---
 
@@ -50,38 +50,34 @@ This API endpoint fetches repository access information for a given GitHub organ
 
 ## Jenkins Continuous Integration (CI) pipeline
 
-<p align="center">
-  <img src="./asset/GitHub_Access_Report_Jinkin_CI_Pipeline.png" width="1000" alt="Dashboard Screenshot"/>
-</p>
-
----
-
-## CI Pipeline (Jenkins)
-
 This project includes a Jenkins Continuous Integration (CI) pipeline that automates the build, security scanning, and Docker image publishing process whenever changes are pushed to the repository.
 
 The pipeline ensures that the application is built, analyzed for vulnerabilities, and packaged into a Docker image in a fully automated manner.
 
-Pipeline Stages
+### Pipeline Stages
+
+<p align="center">
+  <img src="./asset/GitHub_Access_Report_Jinkin_CI_Pipeline.png" width="1000" alt="Dashboard Screenshot"/>
+</p>
 
 The Jenkins pipeline consists of the following stages:
 
-Clean Workspace
+#### Clean Workspace
 Clears the Jenkins workspace to ensure a fresh build environment.
 
-Clone Repository
+#### Clone Repository
 Pulls the latest source code from the GitHub repository.
 
-Trivy File System Scan
+#### Trivy File System Scan
 Performs a vulnerability scan on the project files using Trivy to detect potential security issues in dependencies and source code.
 
-Docker Build
+#### Docker Build
 Builds the Docker image for the Spring Boot application using the multi-stage Dockerfile.
 
-Trivy Image Scan
+#### Trivy Image Scan
 Scans the built Docker image for vulnerabilities to ensure the container is secure before deployment.
 
-Docker Push
+#### Docker Push
 Pushes the built Docker image to Docker Hub, making it available for deployment.
 
 ---
@@ -206,6 +202,7 @@ com.omprakash.github_access_report
 Before running the project, ensure the following tools are installed on your system:
 
 - **Java 21** – Required to run the Spring Boot application
+- **IDE** – Intellij IDEA for better experience.
 - **Maven** – Used for dependency management and building the project
 - **GitHub Personal Access Token** – Required to authenticate with the GitHub API
 
@@ -246,7 +243,7 @@ Open the following file:
 
 Add the following configuration:
 
-    `github.token=YOUR_GITHUB_PERSONAL_ACCESS_TOKEN
+    `github.token=${YOUR_GITHUB_PERSONAL_ACCESS_TOKEN}
      github.base-url=https://api.github.com`
 
 
@@ -260,7 +257,11 @@ For production environments, it is recommended to store the token using environm
 ## How to Run the Project
 
 Follow the steps below to run the application locally.
+- You can run Application by two way:
+    1. Using Maven or IDE(Recommended)
+    2. Using Docker(Easy)
 
+## Option-1
 ### 1. Clone the Repository
 
 ```bash
@@ -282,7 +283,7 @@ Follow the steps below to run the application locally.
 
 - src/main/resources/application.properties
 ```bash
-   github.token=YOUR_GITHUB_PERSONAL_ACCESS_TOKEN 
+   github.token=${YOUR_GITHUB_PERSONAL_ACCESS_TOKEN} 
    github.base-url=https://api.github.com
  ```
 
@@ -297,7 +298,61 @@ Follow the steps below to run the application locally.
 
 - GithubAccessReportApplication.java
 
-### 5. Access the API Documentation
+
+## Option-2
+### Build and Run the Project Using Docker
+
+Before running the project, ensure **Docker is installed and running on your system**.
+
+* **Windows / macOS:** Install **Docker Desktop** from
+  https://www.docker.com/products/docker-desktop/
+* **Linux (Ubuntu example):**
+
+  ```bash
+  sudo apt update
+  sudo apt install docker.io
+  sudo systemctl start docker
+  sudo systemctl enable docker
+  ```
+
+You can verify the installation with:
+
+```bash
+docker --version
+```
+
+---
+
+### 1. Build the Docker Image
+
+Navigate to the project root directory (where the `Dockerfile` is located) and run:
+
+```bash
+docker build -t github-access-report .
+```
+
+---
+
+### 2. Run the Docker Container
+
+```bash
+docker run -p 8080:8080 -e GIT_TOKEN=YOUR_PersonalAccessToken github-access-report
+```
+
+This will start the application inside a Docker container and expose it on **port 8080**.
+
+---
+
+### 3. Access the Application
+
+Once the container is running, open your browser and visit:
+
+```
+http://localhost:8080/v1/api/github/access-report?org=ORGANIZATION_NAME
+```
+
+
+### Access the API Documentation
 
 - Once the application starts, open the Swagger UI:
 
@@ -306,7 +361,7 @@ Follow the steps below to run the application locally.
 
 - Swagger provides an interactive interface to test the API endpoints.
 
-
+- You can test the API endpoint to generate the **GitHub repository access report** for an organization.
 ---
 
 ## API Endpoint
@@ -349,6 +404,264 @@ GET /v1/api/github/access-report
 ```
 
 - Swagger provides an interactive interface to test the endpoint directly from the browser.
+
+---
+
+## Complete Error Handling Demonstration
+
+- The API implements centralized exception handling using a Global Exception Handler to provide consistent and meaningful error responses. Each error scenario returns an appropriate HTTP status code along with a structured JSON response.
+
+- The error response format follows this structure:
+
+```json lines
+{
+    "timestamp": "2026-03-15T06:16:36.699738",
+    "status": 401,
+    "error": "Unauthorized",
+    "message": "Error description",
+    "path": "/v1/api/github/access-report"
+}
+```
+
+
+- Below are the different scenarios handled by the application.
+
+### 1. Successful Response (200 OK)
+
+- This response is returned when the access report is successfully generated.
+
+#### Request
+`GET /v1/api/github/access-report?org=om-prakash-sao`
+
+#### Response
+
+```json lines
+{
+  "organization": "om-prakash-sao",
+  "accessReport": {
+    "ops-cse": [
+      {
+        "repository": "repo2",
+        "permission": "pull"
+      },
+      {
+        "repository": "repo1",
+        "permission": "pull"
+      }
+    ],
+    "omprakashsao": [
+      {
+        "repository": "repo2",
+        "permission": "admin"
+      },
+      {
+        "repository": "repo1",
+        "permission": "admin"
+      }
+    ]
+  },
+  "restrictedRepositoryCount": 0
+}
+```
+
+#### Explanation
+
+##### The API successfully:
+
+- authenticated with GitHub
+
+- retrieved organization repositories
+
+- fetched collaborators
+
+- generated the aggregated access report
+
+### 2. Bad Request (400)
+
+- Returned when the organization parameter is missing or empty.
+
+#### Example Request
+`GET /v1/api/github/access-report?org=`
+#### Response
+
+```json lines
+{
+    "timestamp": "2026-03-15T06:13:13.1982984",
+    "status": 400,
+    "error": "Bad Request",
+    "message": "Organization parameter 'org' must not be empty",
+    "path": "/v1/api/github/access-report"
+}
+```
+
+#### Explanation
+
+- The API validates input parameters before calling GitHub APIs.
+- If the org parameter is empty or invalid, the request is rejected immediately.
+
+### 3. Unauthorized (401)
+
+- Returned when the GitHub authentication token is invalid, expired, or missing.
+
+#### Example Request
+`GET /v1/api/github/access-report?org=om-prakash-sao`
+#### Response
+```json lines
+{
+  "timestamp": "2026-03-15T06:16:36.699738",
+  "status": 401,
+  "error": "Unauthorized",
+  "message": "GitHub authentication failed. Please verify the configured GitHub access token.",
+  "path": "/v1/api/github/access-report"
+}
+```
+
+#### Explanation
+
+- This occurs when:
+
+- the GitHub token is incorrect
+
+- the token has expired
+
+- the token is not provided in environment configuration
+
+### 4. Organization Not Found (404)
+
+- Returned when the specified GitHub organization does not exist or is inaccessible.
+
+#### Example Request
+`GET /v1/api/github/access-report?org=dummy22-org`
+#### Response
+```json lines
+{
+    "timestamp": "2026-03-15T06:22:22.1403842",
+    "status": 404,
+    "error": "Not Found",
+    "message": "GitHub organization 'dummy22-org' does not exist or is not accessible",
+    "path": "/v1/api/github/access-report"
+}
+```
+
+#### Explanation
+
+- This happens when:
+
+- the organization name is incorrect
+
+- the organization does not exist
+
+- the organization is private and inaccessible with the provided token
+
+### 5. Restricted Repository Access (Handled Internally)
+
+- Some repositories restrict collaborator visibility unless the requester has push or admin permissions.
+
+- In such cases GitHub returns 403 Forbidden.
+
+- Instead of failing the entire request, the application handles this scenario gracefully.
+
+#### Behavior
+
+- The restricted repository is skipped
+
+- The report continues for other repositories
+
+- The API returns a counter indicating restricted repositories
+
+#### Example:
+```json lines
+{
+  "restrictedRepositoryCount": 5
+}
+```
+
+- Reason for Design Choice
+
+- Returning all restricted repositories could produce extremely large responses for organizations with hundreds or thousands of repositories. Instead, the API returns only the count of restricted repositories.
+
+### 6. GitHub API Rate Limit Exceeded (429)
+
+- Returned when the GitHub API rate limit has been exceeded.
+
+#### Response
+```json lines
+{
+    "timestamp": "2026-03-15T10:15:00",
+    "status": 429,
+    "error": "Too Many Requests",
+    "message": "GitHub API rate limit exceeded. Please try again later.",
+    "path": "/v1/api/github/access-report"
+}
+```
+
+
+#### Explanation
+
+- GitHub limits the number of API requests allowed per hour.
+- If this limit is exceeded, the API returns HTTP 429.
+
+### 7. Internal Server Error (500)
+
+- Returned when an unexpected error occurs during processing.
+
+#### Response
+```json lines
+{
+    "timestamp": "2026-03-15T10:20:00",
+    "status": 500,
+    "error": "Internal Server Error",
+    "message": "Unexpected error occurred while generating the access report",
+    "path": "/v1/api/github/access-report"
+}
+```
+
+#### Explanation
+
+- This error represents unexpected failures such as:
+
+- runtime exceptions
+
+- data processing issues
+
+- unexpected application errors
+
+### 8. GitHub Service Unavailable (502)
+
+- Returned when GitHub's API service is unavailable or experiencing server errors.
+
+#### Response
+```json lines
+{
+  "timestamp": "2026-03-15T10:25:00",
+  "status": 502,
+  "error": "Bad Gateway",
+  "message": "GitHub service is currently unavailable",
+  "path": "/v1/api/github/access-report"
+}
+```
+
+#### Explanation
+
+- This occurs when GitHub returns 5xx server errors, indicating temporary service issues.
+
+###### Summary
+
+- The application provides robust error handling with meaningful HTTP status codes and descriptive messages. This ensures that API consumers receive clear feedback about what went wrong and how to resolve it.
+
+- Handled scenarios include:
+
+| Status Code  |   Description |
+|--------------|-------------------|
+| 200          | Access report generated successfully |
+| 400          | Invalid report generated successfully |
+| 401          | GitHub authentication failed |
+| 404          | Organization not found |
+| 403          | Restricted repositories handled internally |
+| 429          | GitHub API rate limit exceeded |
+| 500          | Unexpected application error |
+| 502          | GitHub service unavailable |
+
 
 ---
 
