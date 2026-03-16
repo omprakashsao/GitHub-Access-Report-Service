@@ -100,7 +100,6 @@ Beyond the minimum requirements, this project includes several improvements typi
 ---
 
 
----
 
 ## 📈 Scalability Considerations
 
