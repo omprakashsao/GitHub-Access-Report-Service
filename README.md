@@ -44,7 +44,7 @@ Click the thumbnail below to watch the demo.
 
 <p align="center">
   <a href="https://youtu.be/1KEM7v2T0eI">
-    <img src="asset/Project-Demonstration.png" width="850" style="border-radius:18px; box-shadow:0px 4px 20px rgba(0,0,0,0.25);">
+    <img src="asset/Project-Demo.png" width="850" style="border-radius: 30px; box-shadow:0px 4px 20px rgba(0,0,0,0.25);">
   </a>
 </p>
 
