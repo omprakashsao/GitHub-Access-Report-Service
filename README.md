@@ -32,6 +32,20 @@ The application is built using **Spring Boot** and follows clean backend archite
 
 ---
 
+## 🎥 Project Demonstration
+
+This short video demonstrates:
+
+- Application workflow
+- API usage
+- Example responses
+
+Click the thumbnail below to watch the demo.
+
+[![GitHub Access Report Service Demo](asset/Project-Demonstration.png)](https://youtu.be/1KEM7v2T0eI)
+
+---
+
 ## 🧠 Problem Statement
 
 The system solves the following organizational challenges:
